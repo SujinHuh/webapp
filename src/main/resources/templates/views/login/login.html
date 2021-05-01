@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>site</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            font-family: 'Nanum Gothic', sans-serif;
+        }
+
+        body {
+            background: #f2f2f2;
+        }
+
+        section {
+            width: 100%;
+            min-height:80vh;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -moz-box;
+            display: -ms-flexbox;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+
+        }
+        .simple-login-container{
+            width: 350px;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            padding: 70px 40px;
+
+            box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
+            -moz-box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
+            -webkit-box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
+            -o-box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
+            -ms-box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
+        }
+        .simple-login-container h2{
+            text-align:center;
+            margin: 0px 0px 50px 0px;
+            font-size: xx-large;
+        }
+        .form-group {
+            text-align: center;
+        }
+        .form-group button {
+            width: 50%;
+        }
+
+        .row .btn {
+            margin-top: 30px;
+        }
+
+        .left {
+            float: left;
+        }
+        .right {
+            float: right;
+        }
+        .row .form-group p {
+            padding-top: 10px;
+        }
+
+        .modal-body.alert {
+            padding: 20px;
+            overflow: hidden;
+            height: 50px;
+        }
+
+        .modal-footer {
+            padding: 0;
+            height: 60px;
+        }
+
+        .modal-footer button {
+
+            margin-top: 10px;
+            height: 50px;
+        }
+
+    </style>
+
+</head>
+<body>
+<section>
+    <div class="simple-login-container">
+        <!-- <h2 style="text-align: center; font-size: x-large;"><strong>Login</strong></h2> -->
+        <h2><strong>Login</strong></h2>
+        <form id="mainFrm">
+            <div class="row">
+                <div class="col-md-12 form-group">
+                    <input type="text" class="form-control" placeholder="사번" id="userId"  name="userId" >
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 form-group">
+                    <input type="password" placeholder="Password" class="form-control" id="userPw" name="userPw" >
+                </div>
+            </div>
+            <div  align="center" style="margin-top:20px;">
+                <button type="button" class="btn  btn-primary" id="loginBtn" style="width:100px;margin-right:5px" onclick="goLogin()" >로그인</button>
+                <button type="button" class="btn  btn-primary" id="registerBtn" style="width:100px" onclick="goLogin()" >회원가입</button>
+            </div>
+        </form>
+    </div>
+</section>
+</body>
+<script>
+
+    //로그인 기능
+    function goLogin() {
+
+        if(validation()){
+
+            var param = {
+                userId : $('#userId').val(),
+                userPw : $('#userPw').val()
+            };
+
+            $.ajax(
+                {
+                url:'/login/access',
+                type:'POST',
+                dataType:'json',
+                data : param
+                }
+
+            ).done(function(data) {
+                if(data.resultCode == 200) {
+                    alert('로그인성공');
+                    //location.href= "/view/main";
+                }else {
+                    alert(data.resultMsg);
+                    return false;
+                }
+            }).fail(function(error) {
+                console.log(error);
+            });
+
+        }
+    }
+
+    //id pwd 유효성 체크
+    function validation() {
+
+
+        /**
+         jquery # << 아이디 명
+                . << 클래스 명
+                input [name='이름'] << name 값으로 가져올 경
+        */
+        var userId = $('#userId'); // 아이디 input 객체 가져 오기
+        var userPw = $('#userPw'); //비밀번호 input 객체 가져오기
+
+    /**
+     jquery 에서 setter --> .val(값); //값을 부여
+     jquery 에서 getter --> .val(); // 값을 가져옴
+     */
+        if(userId.val()==''|| $.trim(userId.val()).length ==0 ){
+            alert('아이디를 입력하세요');
+            userId.val('');
+            userId.focus(); // 해당 input 창에 커서가 가도록
+            return false;
+        }
+
+        if(userPw.val()==''|| $.trim(userPw.val()).length ==0 ){
+            alert('패스워드를 입력하세요');
+            userPw.val('');
+            userPw.focus(); // 해당 input 창에 커서가 가도록
+            return false;
+        }
+        return true;
+    }
+</script>
+</html>
