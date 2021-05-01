@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
+//Service - Request 어떤처리를 할지
 @Service
 public class LoginService {
     private LoginMapper loginMapper;

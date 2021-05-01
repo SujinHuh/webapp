@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
+//Controller - Request 를 어떻게 처리
 @Controller
 @RequestMapping("/login")
 public class LoginController {
