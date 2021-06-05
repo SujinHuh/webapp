@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.code.webapp.mapper.board.BoardMapper">
+
+    <select id ="getBoardListCount" parameterType="kr.code.webapp.vo.board.SearchVo"  resultType="int">
+
+                select  count (bbs.b_id) as boardId
+                from bbs_board bbs
+                    left join board_files bf on bbs.b_id = bf.b_id
+
+    </select>
+    <select id ="getBoardList" parameterType="java.util.Map"  resultType="kr.code.webapp.vo.board.BoardDataVO">
+
+                select *
+                from (
+                        select row_number() over(order by bbs.b_id desc, bbs.b_count desc, bbs.b_title asc ) as rn,
+                                bbs.b_id as boardId,
+                                bbs.b_title as boardTitle,
+                                bbs.b_contents as boardContents,
+                                bbs.b_author as boardAuthor,
+                                bbs.b_count as readCount,
+                                bbs.reg_date,
+                                bbs.mod_date,
+                                bf.origin_filename,
+                                bf.stored_filename,
+                                bf.file_path
+
+                        from bbs_board bbs
+                        left join board_files bf on bbs.b_id = bf.b_id
+                )a
+                where 1 = 1
+                and rn between #{startRow} and #{rangeCnt}
+    </select>
+</mapper>

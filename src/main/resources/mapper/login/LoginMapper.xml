@@ -3,11 +3,13 @@
 
 <mapper namespace="kr.code.webapp.mapper.login.LoginMapper">
 
-    <select id="getLoginInfo" parameterType="java.util.Map" resultType="kr.code.webapp.vo.login.UserInfoVo">
-        select *
-            from user_info
-            where user_id = #{userId}
-                   AND user_pw = #{userPw}
+    <select id="getLoginInfo" parameterType="java.util.Map" resultType="kr.code.webapp.vo.login.UserInfoVO">
+
+         SELECT *
+         FROM user_info
+         WHERE user_id = #{userId}
+             AND user_pw = #{userPw}
+
     </select>
 
 </mapper>

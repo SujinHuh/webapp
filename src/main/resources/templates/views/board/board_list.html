@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://wwww.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" data-layout-decorate="~{layout/main_layout}">
+<div class="content-wrapper" layout:fragment="content">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/reset.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/font.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/all.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}" />
+
+    <div id="wrap">
+        <div id="skipNav">
+            <a href="#gnb">주메뉴 메인메뉴</a>
+            <a href="#contents">본문 바로가기</a>
+        </div>
+
+        <div id="header">
+            <h1><a href="#">게시판</a></h1>
+        </div>
+        <div id="container" class="div_normal">
+            <!-- #contents -->
+            <div id="contents">
+                <!-- .content -->
+                <div class="content">
+                    <!-- .titArea -->
+                    <div class="titArea">
+                        <h3>게시판</h3>
+                    </div>
+                    <form id ="goDetailFrm" name="goDetailFrm" method="post" action="/admin/modify" >
+                        <input type="hidden" id="userNo" name="userNo">
+                        <input type="hidden" id="nowPage" name="nowPage" value="0">
+                        <!-- //.section -->
+                        <div class="tblTop">
+                            <div class="srchNum">총 <span th:text="${listSize}"></span>건이 검색되었습니다.</div>
+                        </div>
+                        <!-- .tblBox -->
+                        <div class="tblBox" style="padding-top: 5px">
+                            <table class="tblType01" style="table-layout: fixed">
+                                <caption class="hide">신청자 목록</caption>
+                                <colgroup>
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th scope="col" style="width: 3%;">
+                                        <div class="ipt_check_only">
+                                            <input type="checkbox" id="ipt_check_all" class="ipt_check">
+                                            <label for="ipt_check_all"></label>
+                                        </div>
+                                    </th>
+                                    <th scope="col" style="width: 3%;">번호</th>
+                                    <th scope="col" style="width: 5%;">제목</th>
+                                    <th scope="col" style="width: 10%;">저자</th>
+                                    <th scope="col" style="width: 5%;">파일이름</th>
+                                    <th scope="col"  style="width: 10%;">조회</th>
+                                </tr>
+                                </thead>
+                                <tbody id="listBody"></tbody>
+                            </table>
+                        </div>
+                        <!-- //.tblBox -->
+                        <!-- .paging_wrap -->
+                        <div class="paging_wrap">
+                            <div class="btnBox left">
+                                <button type="button" class="btn_lyr_remove"><span class="fas fa-check"></span>선택삭제</button>
+                            </div>
+                            <div class="paging" ></div>
+                            <div class="btnBox right">
+                                <button type="button" class="" onclick="add();"><span class="fas fa-check"></span>등록</button>
+                            </div>
+                        </div>
+                        <!-- //.paging_wrap -->
+                        <input type="hidden" id="currentPage" name="currentPage" value="1">
+                    </form>
+                </div>
+                <!-- //.content -->
+            </div>
+            <!-- //#contents -->
+        </div>
+    </div>
+    <div class="lyrWrap">
+        <div class="lyr_bg"></div>
+        <div class="lyrBox lyr_remove">
+            <div class="lyr_top">
+                <h3>삭제</h3>
+                <button class="btn_lyr_close">닫기</button>
+            </div>
+            <div class="lyr_mid">
+                <p class="txt al_c">선택된 신청자를 삭제 합니다.</p>
+            </div>
+            <div class="lyr_btm">
+                <div class="btnBox sz_small">
+                    <button class="btn_lyr_close"  onclick="remove()">확인</button>
+                    <button class="btn_lyr_close">취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<script>
+
+    function getListData() {
+
+        var param = {
+            currentPage : $('#currentPage').val()
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/board/bbs/data",
+            data: param,
+            dataType: "json"
+        }).done(function(data){
+            console.log(data)
+            setData(data);
+        }).fail(function(error){
+            console.log(error)
+        })
+
+    }
+
+    function setData(data) {
+        //서버 결과에서 받은 현재 페이지를 갱신한다.
+        $('currentPage').val(data.pageVo.currentPage);
+        drawList(data.boardList);
+    }
+    //테이블 리스트 그려주기
+    function drawList(boardList) {
+        tbody = $('#listBody')
+        tbody.empty(); //내용지우기
+
+        if(typeof boardList !== 'undefined') {
+            var content = '';
+            $.each(boardList, function(index, obj) {
+                content = ''; // 초기화
+                var checkId  = 'ch_' + obj.boardId;
+                content += '<tr>';
+                content += '  <td scope="row">';
+                content += '    <div class="ipt_check_only">';
+                content += '       <input type="checkbox" class="ipt_check" id="'+ checkId +'" value="'+ obj.boardId +'">'
+                content += '    </div>';
+                content += '  </td>';
+                content += '  <td>' + obj.boardId + '</td>';
+                content += '  <td>' + obj.boardTitle + '</td>';
+                content += '  <td>' + obj.boardAuthor + '</td>';
+                content += '  <td><a href="#" onclick="downFile('+ obj.boardId +')">' + obj.originFileName + '</a></td>';
+                content += '  <td>' + obj.readCount + '</td>';
+                content += '</tr>';
+
+                tbody.append(content)
+            });
+        }
+    }
+
+    function downFile(boardId){
+        console.log();
+    }
+
+     $(document).ready(function(){
+         getListData();
+     })
+</script>
+</div>
+</html>

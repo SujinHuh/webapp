@@ -1,9 +1,10 @@
 package kr.code.webapp.vo.login;
 
+
 import lombok.Data;
 
 @Data
-public class UserInfoVo {
+public class UserInfoVO {
 
     private String userId;
     private String userPw;
@@ -11,5 +12,4 @@ public class UserInfoVo {
     private int userAge;
     private String userAddr;
     private String userAddrDetail;
-
 }
