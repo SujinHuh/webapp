@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://wwww.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <!— Cache reset —>
+    <meta http-equiv="Expires" content="Mon, 06 Jan 2016 00:00:01 GMT">
+    <meta http-equiv="Expires" content="-1">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+
+    <!— icon_favicon —>
+    <!— 윈도우즈 사이트 아이콘, HiDPI/Retina 에서 Safari 나중에 읽기 사이드바 —>
+    <!--<link rel="shortcut icon" type="image/x-icon" href="${path}/resources/images/ico_favicon_60x60.png"> -->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/popup.css}"/>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.5.2/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/reset.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/font.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/all.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
+</head>
+<body>
+
+<div id="pop_wrap">
+    <div class="pop_top">
+        <h1>게시판</h1>
+        <button type="button" class="pop_close" onclick="doclose();">닫기</button>
+    </div>
+    <div class="pop_mid">
+        <div class="pop_stn">
+            <form id="addForm" method="post" enctype="multipart/form-data">
+                <div class="pop_stn_cont">
+                    <dl class="dlBox">
+                        <dt>게시판 제목</dt>
+                        <dd>
+                            <input type="text" class="ipt_txt" id="boardTitle" value="">
+                        </dd>
+                    </dl>
+                    <dl class="dlBox">
+                        <dt>첨부파일</dt>
+                        <dd>
+                            <input type="file" class="ipt_txt" id="file"></input>
+                        </dd>
+                    </dl>
+                    <dl class="dlBox">
+                        <dt>게시판 내용</dt>
+                        <dd>
+                        <textarea type="txtbox" rows="10" style="width: 100%" id="boardContents"
+                                  name="boardContents"></textarea>
+                        </dd>
+                    </dl>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="pop_btm">
+        <button type="button" class="btn_point" style="margin-right: 3px">추가</button>
+        <button type="button" style="margin-left: 3px" onclick="doclose();">취소</button>
+    </div>
+</div>
+</body>
+<script type="text/javascript" th:src="@{/dist/js/all.js}"></script>
+<script>
+    //팝업 닫기
+    function doclose() {
+        self.close();
+    }
+
+</script>
+</html>

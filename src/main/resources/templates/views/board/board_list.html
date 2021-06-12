@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://wwww.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" data-layout-decorate="~{layout/main_layout}">
+<html lang="en" xmlns:th="http://wwww.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      data-layout-decorate="~{layout/main_layout}">
 <div class="content-wrapper" layout:fragment="content">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/reset.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{/css/font.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{/css/all.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/reset.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/font.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/all.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
 
     <div id="wrap">
         <div id="skipNav">
@@ -25,7 +26,7 @@
                     <div class="titArea">
                         <h3>게시판</h3>
                     </div>
-                    <form id ="goDetailFrm" name="goDetailFrm" method="post" action="/admin/modify" >
+                    <form id="goDetailFrm" name="goDetailFrm" method="post" action="/admin/modify">
                         <input type="hidden" id="userNo" name="userNo">
                         <input type="hidden" id="nowPage" name="nowPage" value="0">
                         <!-- //.section -->
@@ -50,7 +51,7 @@
                                     <th scope="col" style="width: 5%;">제목</th>
                                     <th scope="col" style="width: 10%;">저자</th>
                                     <th scope="col" style="width: 5%;">파일이름</th>
-                                    <th scope="col"  style="width: 10%;">조회</th>
+                                    <th scope="col" style="width: 10%;">조회</th>
                                 </tr>
                                 </thead>
                                 <tbody id="listBody"></tbody>
@@ -60,11 +61,13 @@
                         <!-- .paging_wrap -->
                         <div class="paging_wrap">
                             <div class="btnBox left">
-                                <button type="button" class="btn_lyr_remove"><span class="fas fa-check"></span>선택삭제</button>
+                                <button type="button" class="btn_lyr_remove"><span class="fas fa-check"></span>선택삭제
+                                </button>
                             </div>
-                            <div class="paging" ></div>
+                            <div class="paging" id="pagingDiv"></div>
                             <div class="btnBox right">
-                                <button type="button" class="" onclick="add();"><span class="fas fa-check"></span>등록</button>
+                                <button type="button" class="" onclick="add();"><span class="fas fa-check"></span>등록
+                                </button>
                             </div>
                         </div>
                         <!-- //.paging_wrap -->
@@ -88,7 +91,7 @@
             </div>
             <div class="lyr_btm">
                 <div class="btnBox sz_small">
-                    <button class="btn_lyr_close"  onclick="remove()">확인</button>
+                    <button class="btn_lyr_close" onclick="remove()">확인</button>
                     <button class="btn_lyr_close">취소</button>
                 </div>
             </div>
@@ -96,68 +99,103 @@
     </div>
 
 
-<script>
+    <script>
 
-    function getListData() {
+        function getListData() {
 
-        var param = {
-            currentPage : $('#currentPage').val()
+            var param = {
+                currentPage: $('#currentPage').val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/board/bbs/data",
+                data: param,
+                dataType: "json"
+            }).done(function (data) {
+                console.log(data)
+                setData(data);
+            }).fail(function (error) {
+                console.log(error)
+            })
+
         }
 
-        $.ajax({
-            type: "POST",
-            url: "/board/bbs/data",
-            data: param,
-            dataType: "json"
-        }).done(function(data){
-            console.log(data)
-            setData(data);
-        }).fail(function(error){
-            console.log(error)
+        function setData(data) {
+            //서버 결과에서 받은 현재 페이지를 갱신한다.
+            $('currentPage').val(data.pageVo.currentPage);
+            drawList(data);
+        }
+
+        //테이블 리스트 그려주기
+        function drawList(data) {
+            tbody = $('#listBody')
+            tbody.empty(); //내용지우기
+
+            var boardList = data.boardList;
+            if (typeof boardList !== 'undefined') {
+                var content = '';
+                $.each(boardList, function (index, obj) {
+                    content = ''; // 초기화
+                    var checkId = 'ch_' + obj.boardId;
+                    content += '<tr>';
+                    content += '  <td scope="row">';
+                    content += '    <div class="ipt_check_only">';
+                    content += '       <input type="checkbox" class="ipt_check" id="' + checkId + '" value="' + obj.boardId + '">'
+                    content += '    </div>';
+                    content += '  </td>';
+                    content += '  <td>' + obj.boardId + '</td>';
+                    content += '  <td>' + obj.boardTitle + '</td>';
+                    content += '  <td>' + obj.boardAuthor + '</td>';
+                    content += '  <td><a href="#" onclick="downFile(' + obj.boardId + ')">' + obj.originFileName + '</a></td>';
+                    content += '  <td>' + obj.readCount + '</td>';
+                    content += '</tr>';
+
+                    tbody.append(content)
+                });
+            }
+
+            //page Update
+            var pagingDiv = $('#pagingDiv'); //객체 가져오기.
+            pagingDiv.empty();
+            pagingDiv.append(data.pager);
+        }
+
+
+        function goPage(currentPage) {
+            // 이동할 페이지를 갱신해 준다.
+            $('#currentPage').val(currentPage);
+            //리스트랑 페이징을 다시 그린다.
+            getListData();
+        }
+
+        function downFile(boardId) {
+            console.log();
+        }
+
+        function add() {
+            var _width = '700';
+            var _height = '500';
+            //팝업을 가운데 위치시키기 위해 아래 같이 값 구하기
+            var _left = (document.body.offsetWidth / 2) - (_width / 2);//가운데 정렬.
+
+            //듀얼 모니터
+            if (window.screenLeft > 0) {
+                _left += window.screenLeft;// 듀얼모니터일 때
+            }
+
+            var _top = (document.body.offsetHeight/2) - (_height/2);
+
+            var popSize = "width=" + _width + ",height=" + _height;
+            var popOption = "titlebar=no,toolbar=no,menubar=no,location=no,directories=no,status=no,scrollbars=yes";
+            popOption += ', left=' + _left + ', top=' + _top;
+
+            var _popAdd = window.open("/board/bbs/add", "pop1", popSize + "," + popOption);
+        }
+
+        $(document).ready(function () {
+            getListData();
         })
-
-    }
-
-    function setData(data) {
-        //서버 결과에서 받은 현재 페이지를 갱신한다.
-        $('currentPage').val(data.pageVo.currentPage);
-        drawList(data.boardList);
-    }
-    //테이블 리스트 그려주기
-    function drawList(boardList) {
-        tbody = $('#listBody')
-        tbody.empty(); //내용지우기
-
-        if(typeof boardList !== 'undefined') {
-            var content = '';
-            $.each(boardList, function(index, obj) {
-                content = ''; // 초기화
-                var checkId  = 'ch_' + obj.boardId;
-                content += '<tr>';
-                content += '  <td scope="row">';
-                content += '    <div class="ipt_check_only">';
-                content += '       <input type="checkbox" class="ipt_check" id="'+ checkId +'" value="'+ obj.boardId +'">'
-                content += '    </div>';
-                content += '  </td>';
-                content += '  <td>' + obj.boardId + '</td>';
-                content += '  <td>' + obj.boardTitle + '</td>';
-                content += '  <td>' + obj.boardAuthor + '</td>';
-                content += '  <td><a href="#" onclick="downFile('+ obj.boardId +')">' + obj.originFileName + '</a></td>';
-                content += '  <td>' + obj.readCount + '</td>';
-                content += '</tr>';
-
-                tbody.append(content)
-            });
-        }
-    }
-
-    function downFile(boardId){
-        console.log();
-    }
-
-     $(document).ready(function(){
-         getListData();
-     })
-</script>
+    </script>
 </div>
 </html>

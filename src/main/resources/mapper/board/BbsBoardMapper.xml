@@ -21,9 +21,9 @@
                                 bbs.b_count as readCount,
                                 bbs.reg_date,
                                 bbs.mod_date,
-                                bf.origin_filename,
-                                bf.stored_filename,
-                                bf.file_path
+                                coalesce(bf.origin_filename, '') as originFileName,
+                                coalesce(bf.stored_filename, '') as storedFileName,
+                                coalesce(bf.file_path, '') as filePath
 
                         from bbs_board bbs
                         left join board_files bf on bbs.b_id = bf.b_id

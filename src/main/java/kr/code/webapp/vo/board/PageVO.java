@@ -57,11 +57,12 @@ public class PageVO {
     private void makePage() {
 
         lastRow  = this.currentPage * countPerPage;
-        startRow = this.lastRow - countPerPage;
+        startRow = (this.currentPage-1) * countPerPage + 1;
+        //startRow = this.lastRow - countPerPage ; //mysql
 
 
         if(startRow < 0) {
-            startRow = 0;
+            startRow = 1;
         }
 
         if(lastRow <=0) {
