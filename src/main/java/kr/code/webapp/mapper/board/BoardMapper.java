@@ -14,5 +14,10 @@ public interface BoardMapper {
 
     int getBoardListCount(SearchVo searchVo) throws Exception;
 
-    List<BoardDataVO> getBoardList (SearchVo searchVo) throws Exception;
+    List<BoardDataVO> getBoardList(SearchVo searchVo) throws Exception;
+
+
+    int insertBoard(Map<String, Object> param) throws Exception;
+
+    int insertFile(Map<String, Object> param) throws Exception;
 }

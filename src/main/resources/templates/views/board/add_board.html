@@ -43,13 +43,13 @@
                     <dl class="dlBox">
                         <dt>게시판 제목</dt>
                         <dd>
-                            <input type="text" class="ipt_txt" id="boardTitle" value="">
+                            <input type="text" class="ipt_txt" id="boardTitle" name="boardTitle" value="">
                         </dd>
                     </dl>
                     <dl class="dlBox">
                         <dt>첨부파일</dt>
                         <dd>
-                            <input type="file" class="ipt_txt" id="file"></input>
+                            <input type="file" class="ipt_txt" id="file" name="file"></input>
                         </dd>
                     </dl>
                     <dl class="dlBox">
@@ -65,7 +65,7 @@
     </div>
 
     <div class="pop_btm">
-        <button type="button" class="btn_point" style="margin-right: 3px">추가</button>
+        <button type="button" class="btn_point" style="margin-right: 3px" onclick="add()">추가</button>
         <button type="button" style="margin-left: 3px" onclick="doclose();">취소</button>
     </div>
 </div>
@@ -77,5 +77,62 @@
         self.close();
     }
 
+    //추가 로직.
+    function add() {
+        var boardTitle = $('#boardTitle');
+        var boardContents = $('#boardContents');
+
+        if(validation(boardTitle,boardContents)){
+           var addForm = $('#addForm'); //폼 객체 호출
+
+            //form 객체가 가지고 있는 테이터를 그릅화
+            var formData = new FormData(addForm[0]);
+
+
+            $.ajax({
+                url:"/board/bbs/add/proc",
+                type:"POST",
+                data: formData,
+                enctype: 'multipart/form-data',
+                processData : false, //file 폼 데이터로 날아가야 한다. '폼째로 날려야 해서'
+                contentType : false,
+                cache : false
+            }).done(function (data) {
+
+                if(data.resultCode == 200){
+                    alert('글이 등록되었습니다. ')
+                    opener.location.reload();//부모창 재실행.
+                    self.close(); //창닫기.
+                }else {
+                    alert('글이 등록이 실패되었습니다.');
+                    return false;
+                }
+            }).fail(function (error) {
+                console.log(error)
+            })
+        }
+
+    }
+
+    //유효성 체크.
+    function validation(boardTitle, boardContents) {
+
+
+        //공백 제거.
+        if($.trim(boardTitle.val()).length == 0){
+            alert('게시글 제목을 써주세요');
+            boardTitle.focus();
+            return false;
+        }
+
+        if($.trim(boardContents.val()).length == 0){
+            alert('게시글 글 써주세요');
+            boardContents.focus();
+            return false;
+        }
+
+        return true;
+
+    }
 </script>
 </html>

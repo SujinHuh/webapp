@@ -31,4 +31,22 @@
                 where 1 = 1
                 and rn between #{startRow} and #{rangeCnt}
     </select>
+
+    <insert id="insertBoard" parameterType="java.util.Map" >
+        <selectKey resultType="int" keyProperty="boardId" order="BEFORE">
+            SELECT nextVal('board_seq')
+        </selectKey>
+        insert into bbs_board(b_id,b_title, b_contents, b_author, reg_date)
+                values (#{boardId},#{boardTitle}, #{boardContents}, #{boardAuthor},now())
+
+
+    </insert>
+
+    <insert id="insertFile" parameterType="java.util.Map">
+        <selectKey resultType="int" keyProperty="fileId" order="BEFORE">
+            SELECT nextVal('f_seq')
+        </selectKey>
+        insert into board_files(f_id, b_id, origin_filename, stored_filename, file_path)
+            values (#{fileId}, #{boardId}, #{originFileName},#{storedFileName},#{filePath})
+    </insert>
 </mapper>
