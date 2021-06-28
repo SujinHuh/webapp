@@ -49,7 +49,7 @@ public class LoginController {
             //정보가 오지 않았다...로그인정보가 맞지 않으니 실패
             if (vo == null) {
                 resultMap.put("resultCode", 500);
-                resultMap.put("resultMsg", "로그인정보가 맞지 않습니다. 다시화인하십시오.");
+                resultMap.put("resultMsg", "로그인정보가 맞지 않습니다. 다시확인하십시오.");
             }else {
 
                 resultMap.put("resultCode", 200);
